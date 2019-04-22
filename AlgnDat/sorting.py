@@ -112,7 +112,7 @@ def partition(array, start, end):
     return end
 
 
-def rand_quick_sort(array, start=0, end=None):  # todo: make versions with other Pivot-picking-operations
+def rand_quick_sort(array, start=0, end=None):  # todo: doesnt work yet
     if end is None:
         end = len(array) - 1
     if start < end:
@@ -125,4 +125,5 @@ def rand_quick_sort(array, start=0, end=None):  # todo: make versions with other
 
 
 rand_quick_sort(a)
-print(a)
+print(len(a))
+print(is_sorted(a))
