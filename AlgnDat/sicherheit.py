@@ -229,7 +229,7 @@ def _findKeylenVigenere(text, pivot):
 
 def findKeylenVigenere(text):
     l=0   # todo funktioniert oft aber nicht immer
-    while l<=0:
+    while l<=1 or l ==len(text):
         l = np.random.randint(1,101)
         l = _findKeylenVigenere(text,l)
     return l
@@ -250,6 +250,7 @@ text4 = "HYKAQHHOHASRTNWTNGXALBRHGDDTHWCEVOQPIAAINHAWWXRNJNCHEQSXLTPHCGDJIVXYKTN
 l = findKeylenVigenere(text4)
 print(l)
 key4 = breakVigenere(text4,l)
+print('Schluessel: ' +zahlenZuWort(key4))
 decryptKey4 = [alphabet[26 - s] for s in key4]
 print('Enschlüsselter Text:')
 print(vigenere(text4, decryptKey4))
