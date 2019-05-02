@@ -103,16 +103,14 @@ def partition(array, start, end):
 
         while array[end] >= pivot and end >= start:
             end -= 1
-
         if end < start:
             done = True
         else:
             swap(array, start, end)
-
     return end
 
 
-def rand_quick_sort(array, start=0, end=None):  # todo: doesnt work yet
+def rand_quick_sort(array, start=0, end=None):
     if end is None:
         end = len(array) - 1
     if start < end:
