@@ -122,6 +122,28 @@ def rand_quick_sort(array, start=0, end=None):
         rand_quick_sort(array, split + 1, end)
 
 
+def lin_search(array, x):
+    for i in range(len(array)):
+        if array[i] == x:
+            return i
+    return -1
+
+
+def bin_search(sorted_array, x, l=0, r=None):
+    if r is None:
+        r = len(sorted_array)
+    if r >= l:
+        mid = l + (r - l) // 2
+        if sorted_array[mid] == x:
+            return mid
+        elif sorted_array[mid] > x:
+            return bin_search(sorted_array, l, mid - 1, x)
+        else:
+            return bin_search(sorted_array, mid + 1, r, x)
+    else:
+        return -1
+
+
 rand_quick_sort(a)
 print(len(a))
 print(is_sorted(a))
