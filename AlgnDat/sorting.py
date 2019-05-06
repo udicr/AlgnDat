@@ -93,21 +93,15 @@ def merge_sort(array):  # todo: make a version with linked lists for better stor
 
 
 def partition(array, start, end):
-    done = False
-    end -= 1
-    pivot = array[-1]
-    while not done:
+    i = (start-1)
+    pivot = array[end]
+    for j in range(start,end):
+        if array[j] <= pivot:
+            i+=1
+            swap(array,i,j)
 
-        while array[start] <= pivot and start <= end:
-            start += 1
-
-        while array[end] >= pivot and end >= start:
-            end -= 1
-        if end < start:
-            done = True
-        else:
-            swap(array, start, end)
-    return end
+    swap(array,i+1,end)
+    return(i+1)
 
 
 def rand_quick_sort(array, start=0, end=None):
@@ -145,5 +139,5 @@ def bin_search(sorted_array, x, l=0, r=None):
 
 
 rand_quick_sort(a)
-print(len(a))
+print(a)
 print(is_sorted(a))
