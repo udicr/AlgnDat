@@ -141,3 +141,4 @@ def bin_search(sorted_array, x, l=0, r=None):
 rand_quick_sort(a)
 print(a)
 print(is_sorted(a))
+print(lin_search(a, 50))
