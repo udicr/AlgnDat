@@ -13,6 +13,19 @@ def a_skalar(A, u, w):
 def a_norm(x, A):
     return np.sqrt(a_skalar(A, x, x))
 
+
+def _1_norm(x):
+    return sum(np.abs(x[:, 0]))
+
+
+def eukl_norm(x):
+    return np.sqrt(x.transpose().__matmul__(x)[0][0])
+
+
+def max_norm(x):
+    return np.amax(np.abs(x))  # max value ls(i:)
+
+
 def LUdecomp(A):
     '''
     basic funcion of LUDecomp in single notation
@@ -20,13 +33,14 @@ def LUdecomp(A):
     :return:  LR np.matrix() can be splitted to L and U with funcs below
     '''
     n = A[0].size
-    for k in range(0,n-1):
-        for i in range(k+1,n):
-            if A[k,k] != 0.0:
-                lam = A[i,k]/A[k,k]
-            A[i,k+1:n]=A[i,k+1:n]-lam*A[k,k+1:n]
-            A[i,k] = lam
+    for k in range(0, n - 1):
+        for i in range(k + 1, n):
+            if A[k, k] != 0.0:
+                lam = A[i, k] / A[k, k]
+            A[i, k + 1:n] = A[i, k + 1:n] - lam * A[k, k + 1:n]
+            A[i, k] = lam
     return A
+
 
 def LUP_solve(A, b):
     '''
@@ -35,29 +49,29 @@ def LUP_solve(A, b):
     :return: x: np.array() shape(1,n)
     '''
     n = A[0].size
-    p = np.array(range(0, n)).reshape(n, 1)
+    p = np.array(range(0, n))
 
     for i in range(0, n - 1):
-        #r = np.amax(np.abs(A[i:n - 1, i]))  # max value ls(i:n)
-        #m = np.where(np.abs(A[i:n - 1, i]) == r)[0][0] + i  # max index ls(i:n)
-        #if np.abs(A[m, n - 1]) < eps:
-        #    raise ZeroDivisionError("Matrix fast singulär")
-        #if m != i:
-         #   A[[i, m], :] = A[[m, i], :]
-        #    p[[i, m]] = p[[m, i]]
+        r = np.amax(np.abs(A[i:, i]))  # max value ls(i:)
+        m = np.where(np.abs(A[i:, i]) == r)[0][0] + i  # max index ls(i:)
+        if np.abs(A[m, n - 1]) < eps:
+            raise ZeroDivisionError("Matrix fast singulär")
+        if m != i:
+            # A[[i, m], :] = A[[m, i], :]                                       #todo: works without pivot solving but doesnt with
+
+            p[[i, m]] = p[[m, i]]
         A[i + 1:, i] = A[i + 1:, i] * 1.0 / A[i, i]
         A[i + 1:, i + 1:] = A[i + 1:, i + 1:] - A[i + 1:, i] * A[i, i + 1:]
     print(A)
-    x = b.copy()
-    #for i in range(n):
-        #x[i, 0] = b[p[i, 0], 0]
+    x = b
+    # x = b[p]
+    print(x)
     for i in range(1, n):
-
         x[i] = x[i] - A[i, :i] * x[:i]
 
     for i in range(n - 1, -1, -1):
         x[i] = (x[i] - A[i, i + 1:n + 1] * x[i + 1:n + 1]) / A[i, i]
-
+    return x
 
 
 def get_ru(A):
@@ -69,14 +83,14 @@ def get_ll(A):
     return np.tril(A, -1) + np.diag(np.ones(n))
 
 
-A = np.matrix([[1, 4, 3, 12],
-               [3, 1, 2, 9],
-               [1, 2, 1, 10],
-               [1, 1, 5, 1]])
-b = np.array([[1],
-              [2],
-              [3],
-              [4]])
+A = np.matrix([[2, 0, 0, 1],
+               [4, 1, 0, 2],
+               [6, 2, 3, 3],
+               [8, 3, 6, 8]])
+b = np.array([[3],
+              [7],
+              [14],
+              [25]])
 '''print(A)
 t0 = time.time()
 P, L, U = scipy.linalg.lu(A,True)
@@ -87,21 +101,11 @@ print(LU_einzeln(A))
 t2 = time.time() - t0
 print("T1 : " + str(t1) + "  T2 : " + str(t2))
 '''
-LUP_solve(A, b)
-A = np.matrix([[1, 4, 3, 12],
-               [3, 1, 2, 9],
-               [1, 2, 1, 10],
-               [1, 1, 5, 1]])
-b = np.array([[1],
-              [2],
-              [3],
-              [4]])
-P, L, U = scipy.linalg.lu(A)
-#print(L)
-#print(np.linalg.solve(A, b))
+x = LUP_solve(A, b)
 
-A = np.matrix([[1, 4, 3, 12],
-               [3, 1, 2, 9],
-               [1, 2, 1, 10],
-               [1, 1, 5, 1]])
+A = np.matrix([[2, 0, 0, 1],
+               [4, 1, 0, 2],
+               [6, 2, 3, 3],
+               [8, 3, 6, 8]])
 print(LUdecomp(A))
+print(_1_norm(x))
