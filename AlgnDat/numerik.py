@@ -42,6 +42,21 @@ def LUdecomp(A):
     return A
 
 
+def cholesky_solve(A, b):
+    n = A[0].size
+    for i in range(n):
+        A[i + 1:, i] = A[i + 1:, i] * 1.0 / A[i, i]
+        A[i + 1:, i + 1:] = A[i + 1:, i + 1:] - A[i + 1:, i] * A[i, i + 1:]
+
+    x = b
+    for i in range(1, n):
+        x[i] = x[i] - A[i, :i] * x[:i]
+
+    for i in range(n - 1, -1, -1):
+        x[i] = (x[i] - A[i, i + 1:n + 1] * x[i + 1:n + 1]) / A[i, i]
+    return x
+
+
 def LUP_solve(A, b):
     '''
     :param A: np.matrix() nxn
@@ -57,15 +72,17 @@ def LUP_solve(A, b):
         if np.abs(A[m, n - 1]) < eps:
             raise ZeroDivisionError("Matrix fast singulär")
         if m != i:
-            # A[[i, m], :] = A[[m, i], :]                                       #todo: works without pivot solving but doesnt with
+            A[[i, m]] = A[[m, i]]
 
             p[[i, m]] = p[[m, i]]
+
         A[i + 1:, i] = A[i + 1:, i] * 1.0 / A[i, i]
         A[i + 1:, i + 1:] = A[i + 1:, i + 1:] - A[i + 1:, i] * A[i, i + 1:]
-    print(A)
-    x = b
-    # x = b[p]
-    print(x)
+
+    # x = b
+
+    x = b[p]
+
     for i in range(1, n):
         x[i] = x[i] - A[i, :i] * x[:i]
 
@@ -83,29 +100,4 @@ def get_ll(A):
     return np.tril(A, -1) + np.diag(np.ones(n))
 
 
-A = np.matrix([[2, 0, 0, 1],
-               [4, 1, 0, 2],
-               [6, 2, 3, 3],
-               [8, 3, 6, 8]])
-b = np.array([[3],
-              [7],
-              [14],
-              [25]])
-'''print(A)
-t0 = time.time()
-P, L, U = scipy.linalg.lu(A,True)
-print(L)
-t1 = time.time() - t0
-t0 += t1
-print(LU_einzeln(A))
-t2 = time.time() - t0
-print("T1 : " + str(t1) + "  T2 : " + str(t2))
-'''
-x = LUP_solve(A, b)
 
-A = np.matrix([[2, 0, 0, 1],
-               [4, 1, 0, 2],
-               [6, 2, 3, 3],
-               [8, 3, 6, 8]])
-print(LUdecomp(A))
-print(_1_norm(x))
